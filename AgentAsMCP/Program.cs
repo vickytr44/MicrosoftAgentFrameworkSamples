@@ -1,8 +1,6 @@
-using AgentAsMCP;
+using Agent.Shared;
 using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
 using ModelContextProtocol.Server;
-using System.ComponentModel;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.WebHost.UseKestrelHttpsConfiguration();
@@ -37,10 +35,3 @@ app.MapGet("/health", () => "OK");
 
 
 app.Run();
-
-
-[Description("Get the weather for a given location.")]
-static string GetWeather(
-    [Description("The location to get the weather for.")]
-        string location)
-    => $"The weather in {location} is cloudy with a high of 15°C.";

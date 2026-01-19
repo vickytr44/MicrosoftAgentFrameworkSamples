@@ -1,8 +1,8 @@
-﻿using Azure;
+using Azure;
 using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
 
-namespace AgentAsMCP;
+namespace Agent.Shared;
 
 public static class Client
 {
@@ -14,11 +14,11 @@ public static class Client
 
         var chatClient = new AzureOpenAIClient(
             new Uri("https://devonai.openai.azure.com/"), credential)
-                .GetChatClient("gpt-4")
-                .AsIChatClient() // Converts a native OpenAI SDK ChatClient into a Microsoft.Extensions.AI.IChatClient
-                .AsBuilder()
-                .UseOpenTelemetry(sourceName: appName, configure: (cfg) => cfg.EnableSensitiveData = true)    // Enable OpenTelemetry instrumentation with sensitive data
-                .Build();
+               .GetChatClient("gpt-4")
+               .AsIChatClient() // Converts a native OpenAI SDK ChatClient into a Microsoft.Extensions.AI.IChatClient
+               .AsBuilder()
+               .UseOpenTelemetry(sourceName: appName, configure: (cfg) => cfg.EnableSensitiveData = true)    // Enable OpenTelemetry instrumentation with sensitive data
+               .Build();
 
         return chatClient;
     }

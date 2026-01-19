@@ -1,6 +1,6 @@
-﻿using Microsoft.Agents.AI;
+﻿using Agent.Shared;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using SimpleAgent.Helpers;
 
 namespace SimpleAgent.Agents;
 

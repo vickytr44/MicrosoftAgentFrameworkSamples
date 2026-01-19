@@ -1,7 +1,7 @@
 ﻿using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 
-namespace SimpleAgent.Helpers;
+namespace Agent.Shared;
 
 public class ChatHelper
 {

@@ -1,4 +1,4 @@
-﻿using SimpleAgent;
+﻿using Agent.Shared;
 using SimpleAgent.Agents;
 
 var appName = "DemoApp";
