@@ -5,6 +5,8 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
+using Azure.Monitor.OpenTelemetry.Exporter;
+
 namespace SimpleAgent;
 
 public static class Otel
@@ -17,18 +19,28 @@ public static class Otel
         .CreateDefault()
         .AddService(SourceName);
 
+        var applicationInsightsConnectionString = "";
+
+        //var otlpEndpoint = "http://localhost:4317";
+
         tracerProvider = Sdk.CreateTracerProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddSource(SourceName)
             .AddSource("*Microsoft.Extensions.AI") // Listen to the Experimental.Microsoft.Extensions.AI source for chat client telemetry
             .AddSource("*Microsoft.Extensions.Agents*") // Listen to the Experimental.Microsoft.Extensions.Agents source for agent telemetry
-            .AddConsoleExporter()
+            .AddHttpClientInstrumentation()
+            //.AddOtlpExporter(options => options.Endpoint = new Uri(otlpEndpoint))
+            .AddAzureMonitorTraceExporter(options => options.ConnectionString = applicationInsightsConnectionString)
+            //.AddConsoleExporter()
             .Build();
 
         meterProvider = Sdk.CreateMeterProviderBuilder()
             .SetResourceBuilder(resourceBuilder)
             .AddMeter("*Microsoft.Agents.AI") // Agent Framework metrics
-            .AddConsoleExporter()
+            .AddHttpClientInstrumentation() // HTTP client metrics
+            .AddRuntimeInstrumentation() // Runtime metrics
+            .AddAzureMonitorMetricExporter(options => options.ConnectionString = applicationInsightsConnectionString)
+            //.AddConsoleExporter()
             .Build();
 
         loggerFactory = LoggerFactory.Create(builder =>
@@ -37,7 +49,8 @@ public static class Otel
             builder.AddOpenTelemetry(options =>
             {
                 options.SetResourceBuilder(resourceBuilder);
-                options.AddConsoleExporter();
+                options.AddAzureMonitorLogExporter(options => options.ConnectionString = applicationInsightsConnectionString);
+                //options.AddConsoleExporter();
                 // Format log messages. This is default to false.
                 options.IncludeFormattedMessage = true;
                 options.IncludeScopes = true;
