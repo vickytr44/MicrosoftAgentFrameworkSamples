@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McpClientSamples", "McpClie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agent.Shared", "Agent.Shared\Agent.Shared.csproj", "{6B6D4126-06F4-D4E3-A876-687061863C36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentA2A", "AgentA2A\AgentA2A.csproj", "{F3988329-E205-459F-8F94-B854C997602B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6B6D4126-06F4-D4E3-A876-687061863C36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B6D4126-06F4-D4E3-A876-687061863C36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B6D4126-06F4-D4E3-A876-687061863C36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3988329-E205-459F-8F94-B854C997602B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3988329-E205-459F-8F94-B854C997602B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3988329-E205-459F-8F94-B854C997602B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3988329-E205-459F-8F94-B854C997602B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
