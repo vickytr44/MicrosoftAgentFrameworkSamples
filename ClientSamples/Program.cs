@@ -5,4 +5,6 @@
 
 //await AgentAsMCPClient.RunAsync();
 
-await A2AClient.Run();
+//await A2AClient.Run();
+
+await AGUIClient.Run();

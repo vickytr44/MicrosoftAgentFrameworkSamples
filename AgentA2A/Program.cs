@@ -16,6 +16,7 @@ var chatClient = Client.AzureChatClient("AgentA2AApp");
 builder.Services.AddSingleton(chatClient);
 
 AIFunction weatherFunction = AIFunctionFactory.Create(GetWeather);
+// HITL is not supported by A2A protocol.
 AIFunction approvalRequiredWeatherFunction =
     new ApprovalRequiredAIFunction(weatherFunction);
 

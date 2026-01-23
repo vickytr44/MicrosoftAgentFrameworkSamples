@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentA2A", "AgentA2A\AgentA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSamples", "ClientSamples\ClientSamples.csproj", "{2D5DEC93-7FE4-14CB-185A-65756F8FAFD5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentAsAGUI", "AgentAsAGUI\AgentAsAGUI.csproj", "{F69D05B5-FDEA-4A12-B443-EF4CC6893BA0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2D5DEC93-7FE4-14CB-185A-65756F8FAFD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D5DEC93-7FE4-14CB-185A-65756F8FAFD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D5DEC93-7FE4-14CB-185A-65756F8FAFD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F69D05B5-FDEA-4A12-B443-EF4CC6893BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F69D05B5-FDEA-4A12-B443-EF4CC6893BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F69D05B5-FDEA-4A12-B443-EF4CC6893BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F69D05B5-FDEA-4A12-B443-EF4CC6893BA0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
