@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace McpClientSamples;
+namespace ClientSamples;
 
 public class TestMCPClient
 {

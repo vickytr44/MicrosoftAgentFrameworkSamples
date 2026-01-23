@@ -1,35 +1,64 @@
-using System.Text.Json.Serialization;
+using A2A;
+using A2A.AspNetCore;
+using Agent.Shared;
+using Microsoft.Agents.AI;
+using Microsoft.Agents.AI.Hosting;
+using Microsoft.Extensions.AI;
+using System.ComponentModel;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureHttpJsonOptions(options =>
-{
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-});
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var chatClient = Client.AzureChatClient("AgentA2AApp");
+
+builder.Services.AddSingleton(chatClient);
+
+AIFunction weatherFunction = AIFunctionFactory.Create(GetWeather);
+AIFunction approvalRequiredWeatherFunction =
+    new ApprovalRequiredAIFunction(weatherFunction);
+
+var agent = builder.AddAIAgent(
+    "AgentA2A",
+    (sp, agentName) =>
+    {
+        var chatClient = sp.GetRequiredService<IChatClient>();
+
+        return new ChatClientAgent(
+            name: agentName,
+            instructions: "You are a helpful assistant that provides concise and informative responses.",
+            chatClient: chatClient,
+            tools: [approvalRequiredWeatherFunction]
+        );
+    });
 
 var app = builder.Build();
 
-var sampleTodos = new Todo[] {
-    new(1, "Walk the dog"),
-    new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-    new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-    new(4, "Clean the bathroom"),
-    new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2)))
+app.UseSwagger();
+app.UseSwaggerUI();
+
+var agentSkill = new AgentSkill()
+{
+    Name = "GetWeather",
+    Description = "Get the weather for a given location."
 };
 
-var todosApi = app.MapGroup("/todos");
-todosApi.MapGet("/", () => sampleTodos);
-todosApi.MapGet("/{id}", (int id) =>
-    sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-        ? Results.Ok(todo)
-        : Results.NotFound());
+var agentcard = new AgentCard()
+{
+    Name = "AgentA2A",
+    Description = "An agent exposed via A2A protocol",
+    Version = "1.0",
+    Skills = [agentSkill]
+};
+
+// Expose the agent via A2A protocol. You can also customize the agentCard
+app.MapA2A(agent, path: "/a2a/agent", agentCard: agentcard);
 
 app.Run();
 
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
-
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-
-}
+[Description("Get the weather for a given location.")]
+static string GetWeather(
+    [Description("The location to get the weather for.")]
+        string location)
+    => $"The weather in {location} is cloudy with a high of 15°C.";

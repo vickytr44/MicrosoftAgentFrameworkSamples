@@ -1,4 +1,5 @@
-﻿using McpClientSamples;
+﻿using ClientSamples;
+
 
 //await TestMCPClient.RunTestMcpClient();
 

@@ -3,7 +3,7 @@ using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 
-namespace McpClientSamples;
+namespace ClientSamples;
 
 public static class AgentAsMCPClient
 {
