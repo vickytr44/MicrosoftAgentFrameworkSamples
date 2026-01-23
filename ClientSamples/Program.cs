@@ -3,4 +3,6 @@
 
 //await TestMCPClient.RunTestMcpClient();
 
-await AgentAsMCPClient.RunAsync();
+//await AgentAsMCPClient.RunAsync();
+
+await A2AClient.Run();

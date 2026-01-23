@@ -29,7 +29,7 @@ var agent = builder.AddAIAgent(
             name: agentName,
             instructions: "You are a helpful assistant that provides concise and informative responses.",
             chatClient: chatClient,
-            tools: [approvalRequiredWeatherFunction]
+            tools: [weatherFunction]
         );
     });
 
