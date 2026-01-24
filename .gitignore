@@ -361,3 +361,28 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Frontend / Next.js (generated & dependency files)
+# Ignore build output, caches, and local env files for the Frontend app
+/Frontend/.next/
+/Frontend/.next/**
+/Frontend/node_modules/
+/Frontend/.turbo/
+/Frontend/.vercel/
+/Frontend/.cache/
+/Frontend/out/
+/Frontend/dist/
+
+# Local env files
+/Frontend/.env
+/Frontend/.env.local
+/Frontend/.env.*.local
+
+# Editor and OS artifacts
+/Frontend/.vscode/
+/Frontend/.DS_Store
+
+# Logs
+/Frontend/npm-debug.log*
+/Frontend/yarn-debug.log*
+/Frontend/yarn-error.log*
