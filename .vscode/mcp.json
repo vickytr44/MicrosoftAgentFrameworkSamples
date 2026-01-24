@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"copilot-kit": {
+			"url": "https://mcp.copilotkit.ai/sse",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
