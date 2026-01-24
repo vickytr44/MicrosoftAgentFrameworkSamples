@@ -13,15 +13,14 @@ WebApplication app = builder.Build();
 var chatClient = Client.AzureChatClient("AGUIAgent");
 
 AIFunction weatherFunction = AIFunctionFactory.Create(GetWeather);
-AIFunction deleteProverbWithIdFunction = AIFunctionFactory.Create(DeleteProverbWithId);
-AIFunction deleteLocationWithIdFunction = AIFunctionFactory.Create(DeleteLocationWithId);
+AIFunction deleteEntityWithIdFunction = AIFunctionFactory.Create(DeleteEntityWithId);
 //AIFunction approvalRequiredWeatherFunction =
 //    new ApprovalRequiredAIFunction(weatherFunction);
 
 var agent = chatClient.AsAIAgent(
     name: "AGUIAssistant",
     instructions: "You are a helpful assistant.",
-    tools: [weatherFunction, deleteProverbWithIdFunction, deleteLocationWithIdFunction]);
+    tools: [weatherFunction, deleteEntityWithIdFunction]);
 
 // Map the AG-UI agent endpoint
 app.MapAGUI("/", agent);
@@ -34,20 +33,28 @@ static string GetWeather(
         string location)
     => $"The weather in {location} is cloudy with a high of 15°C.";
 
-[Description("Deletes a proverb by its ID.")]
-static string DeleteProverbWithId(
-    [Description("The ID of the proverb to delete.")]
-        string proverbId)
+[Description("Deletes a location by its ID.")]
+static string DeleteEntityWithId(
+    [Description("The ID of the entity to delete.")]
+        string entityId,
+    [Description("The type of entity to delete.")]
+        DeleteEntity entityType)
 {
-    Console.WriteLine($"Deleting proverb with ID: {proverbId}");
-    return $"Proverb with ID {proverbId} has been deleted.";
+    switch (entityType)
+    {
+        case DeleteEntity.Proverb:
+            Console.WriteLine($"Deleting proverb with ID: {entityId}");
+            return $"Proverb with ID {entityId} has been deleted.";
+        case DeleteEntity.Location:
+            Console.WriteLine($"Deleting location with ID: {entityId}");
+            return $"Location with ID {entityId} has been deleted.";
+        default:
+            throw new ArgumentOutOfRangeException(nameof(entityType), entityType, null);
+    }
 }
 
-[Description("Deletes a location by its ID.")]
-static string DeleteLocationWithId(
-    [Description("The ID of the location to delete.")]
-        string locationId)
+enum DeleteEntity
 {
-    Console.WriteLine($"Deleting location with ID: {locationId}");
-    return $"Location with ID {locationId} has been deleted.";
+    Proverb,
+    Location
 }
