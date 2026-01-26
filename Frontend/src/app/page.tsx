@@ -16,6 +16,7 @@ import {
 import { CopilotKitCSSProperties, CopilotSidebar } from "@copilotkit/react-ui";
 import { useState } from "react";
 import { DynamicForm, Parameter } from "@/components/dynamicForm";
+import { DeleteEntity } from "@/Models/DeleteEntity";
 
 export default function CopilotKitPage() {
   const [themeColor, setThemeColor] = useState("#6366f1");
@@ -58,12 +59,12 @@ export default function CopilotKitPage() {
           },
           {
             title: "Human In the Loop",
-            message: "Delete the location with id 001",
+            message: "Delete the user with id 001",
           },
-          {
-            title: "Human In the Loop command",
-            message: "Run a command to print Hello World.",
-          },
+          // {
+          //   title: "Human In the Loop command",
+          //   message: "Run a command to print Hello World.",
+          // },
           {
             title: "Write Agent State",
             message: "Add a proverb about AI.",
@@ -132,7 +133,11 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
             {/* <pre className="mt-2 p-2 bg-gray-100 rounded">
               {JSON.stringify(result, null, 2)}
             </pre> */}
-            <WeatherCard location={args.location} themeColor={themeColor} result={result} />
+            <WeatherCard
+              location={args.location}
+              themeColor={themeColor}
+              result={result}
+            />
           </div>
         );
       }
@@ -141,50 +146,50 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
   });
 
   // 🪁 Human In the Loop: https://docs.copilotkit.ai/pydantic-ai/human-in-the-loop
-  useHumanInTheLoop(
-    {
-      name: "go_to_moon",
-      description: "Go to the moon on request.",
-      render: ({ respond, status }) => {
-        return (
-          <MoonCard themeColor={themeColor} status={status} respond={respond} />
-        );
-      },
-    },
-    [themeColor],
-  );
+  // useHumanInTheLoop(
+  //   {
+  //     name: "go_to_moon",
+  //     description: "Go to the moon on request.",
+  //     render: ({ respond, status }) => {
+  //       return (
+  //         <MoonCard themeColor={themeColor} status={status} respond={respond} />
+  //       );
+  //     },
+  //   },
+  //   [themeColor],
+  // );
 
-  useHumanInTheLoop({
-    name: "humanApprovedCommand",
-    description: "Ask human for approval to run a command.",
-    parameters: [
-      {
-        name: "command",
-        type: "string",
-        description: "The command to run",
-        required: true,
-      },
-    ],
-    render: ({ args, respond }) => {
-      return <HumanApprovalCard args={args as any} respond={respond as any} />;
-    },
-  });
+  // useHumanInTheLoop({
+  //   name: "humanApprovedCommand",
+  //   description: "Ask human for approval to run a command.",
+  //   parameters: [
+  //     {
+  //       name: "command",
+  //       type: "string",
+  //       description: "The command to run",
+  //       required: true,
+  //     },
+  //   ],
+  //   render: ({ args, respond }) => {
+  //     return <HumanApprovalCard args={args as any} respond={respond as any} />;
+  //   },
+  // });
 
   useHumanInTheLoop(
     {
       name: "confirmDelete",
-      description: "Ask the human to confirm deletion of an item.",
+      description: "Ask the human to confirm deletion or removal of an item.",
       parameters: [
-        {
-          name: "item",
-          type: "string",
-          description: "The name of the item to delete",
-          required: true,
-        },
         {
           name: "id",
           type: "string",
           description: "The ID of the item to delete",
+          required: true,
+        },
+        {
+          name: "entity",
+          type: "string",
+          description: "The name of the entity to delete",
           required: true,
         },
       ],
