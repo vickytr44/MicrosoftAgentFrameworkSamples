@@ -13,7 +13,7 @@ export function DeleteConfirmationCard({ args, respond }: Props) {
     <div className="bg-white/90 dark:bg-gray-800/90 rounded-lg shadow-md p-4 max-w-md w-full">
       <div className="text-sm text-gray-700 dark:text-gray-200">
         Are you sure you want to delete
-        <span className="font-semibold ml-1">{args.item}</span>?
+        <span className="font-semibold ml-1">{args.item} with ID {args.id}</span>?
       </div>
       <div className="mt-4 flex justify-end gap-3">
         <button

@@ -1,3 +1,4 @@
+import { WeatherResponse } from "@/Models/WeatherResponse";
 
 // Simple sun icon for the weather card
 function SunIcon() {
@@ -11,7 +12,7 @@ function SunIcon() {
 
 // Weather card component where the location and themeColor are based on what the agent
 // sets via tool calls.
-export function WeatherCard({ location, themeColor }: { location?: string, themeColor: string }) {
+export function WeatherCard({ location, themeColor, result }: { location?: string, themeColor: string, result?: WeatherResponse }) {
   return (
     <div
     style={{ backgroundColor: themeColor }}
@@ -24,26 +25,32 @@ export function WeatherCard({ location, themeColor }: { location?: string, theme
           <p className="text-white">Current Weather</p>
         </div>
         <SunIcon />
+        {result && (
+          <div className="ml-4 text-right text-white">
+            <div className="text-2xl font-bold">{result.temperature}</div>
+            <div className="text-sm capitalize">{result.condition}</div>
+          </div>
+        )}
       </div>
       
       <div className="mt-4 flex items-end justify-between">
-        <div className="text-3xl font-bold text-white">70°</div>
-        <div className="text-sm text-white">Clear skies</div>
+        <div className="text-3xl font-bold text-white">{result?.temperature ?? "--"}</div>
+        <div className="text-sm text-white capitalize">{result?.condition ?? "--"}</div>
       </div>
       
       <div className="mt-4 pt-4 border-t border-white">
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <p className="text-white text-xs">Humidity</p>
-            <p className="text-white font-medium">45%</p>
+            <p className="text-white font-medium">{result?.humidity ?? "--"}</p>
           </div>
           <div>
             <p className="text-white text-xs">Wind</p>
-            <p className="text-white font-medium">5 mph</p>
+            <p className="text-white font-medium">{result?.windSpeed ?? "--"}</p>
           </div>
           <div>
             <p className="text-white text-xs">Feels Like</p>
-            <p className="text-white font-medium">72°</p>
+            <p className="text-white font-medium">{result?.temperature ?? "--"}</p>
           </div>
         </div>
       </div>

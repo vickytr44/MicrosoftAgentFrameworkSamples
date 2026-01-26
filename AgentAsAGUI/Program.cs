@@ -2,6 +2,7 @@ using Agent.Shared;
 using Microsoft.Agents.AI.Hosting.AGUI.AspNetCore;
 using Microsoft.Extensions.AI;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient().AddLogging();
@@ -27,11 +28,18 @@ app.MapAGUI("/", agent);
 
 await app.RunAsync();
 
-[Description("Get the weather for a given location.")]
-static string GetWeather(
-    [Description("The location to get the weather for.")]
+[Description("Get the weather for a given location."), DisplayName("Get_Weather")]
+static WeatherResponse GetWeather(
+    [Description("The location to get the weather for."), Required]
         string location)
-    => $"The weather in {location} is cloudy with a high of 15°C.";
+    => new WeatherResponse
+    {
+        Location = location,
+        Temperature = "15°C",
+        Condition = WeatherCondition.Cloudy,
+        WindSpeed = "10 km/h",
+        Humidity = "80%"
+    };
 
 [Description("Deletes a location by its ID.")]
 static string DeleteEntityWithId(
@@ -57,4 +65,24 @@ enum DeleteEntity
 {
     Proverb,
     Location
+}
+
+public enum WeatherCondition
+{
+    Sunny,
+    Rainy,
+    Cloudy,
+    Snowy
+}
+
+public record WeatherResponse
+{
+    public string Location { get; init; }
+    public string Temperature { get; init; }
+
+    public WeatherCondition Condition { get; init; }
+
+    public string WindSpeed { get; init; }
+
+    public string Humidity { get; init; }
 }

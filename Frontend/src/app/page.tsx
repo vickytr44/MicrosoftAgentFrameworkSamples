@@ -50,7 +50,7 @@ export default function CopilotKitPage() {
         suggestions={[
           {
             title: "Generative UI",
-            message: "fill out the user form.",
+            message: "Get me the weather for New York City.",
           },
           {
             title: "Frontend Tools",
@@ -58,7 +58,11 @@ export default function CopilotKitPage() {
           },
           {
             title: "Human In the Loop",
-            message: "Please go to the moon.",
+            message: "Delete the location with id 001",
+          },
+          {
+            title: "Human In the Loop command",
+            message: "Run a command to print Hello World.",
           },
           {
             title: "Write Agent State",
@@ -81,21 +85,6 @@ export default function CopilotKitPage() {
   );
 }
 
-function fetchParametersToFillForm() {
-  return [
-    {
-      name: "message",
-      description: "The message to display in the alert.",
-      required: true,
-    },
-    {
-      name: "title",
-      description: "The title to display in the alert.",
-      required: true,
-    },
-  ];
-}
-
 function YourMainContent({ themeColor }: { themeColor: string }) {
   // 🪁 Shared State: https://docs.copilotkit.ai/pydantic-ai/shared-state
   const { state, setState } = useCoAgent<AgentState>({
@@ -107,19 +96,49 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
     },
   });
 
-  //🪁 Generative UI: https://docs.copilotkit.ai/pydantic-ai/generative-ui
-  useRenderToolCall(
-    {
-      name: "get_weather",
-      description: "Get the weather for a given location.",
-      parameters: [{ name: "location", type: "string", required: true }],
-      render: ({ args, result }) => {
-        return <WeatherCard location={args.location} themeColor={themeColor} />;
-      },
-    },
-    [themeColor],
-  );
+  // useDefaultTool({
+  //   render: ({ name, args, status, result }) => {
+  //     return (
+  //       <div style={{ color: "black" }}>
+  //         <span>
+  //           {status === "complete" ? "✓" : "⏳"}
+  //           {name}
+  //         </span>
+  //         {status === "complete" && result && (
+  //           <pre>{JSON.stringify(result, null, 2)}</pre>
+  //         )}
+  //       </div>
+  //     );
+  //   },
+  // });
 
+  //🪁 Generative UI: https://docs.copilotkit.ai/pydantic-ai/generative-ui
+  useRenderToolCall({
+    name: "Get_Weather",
+    description: "Get the weather for a given location.",
+    parameters: [{ name: "location", type: "string", required: true }],
+    render: ({ args, status, result }: any) => {
+      if (status === "inProgress") {
+        return (
+          <div className="p-4 border rounded animate-pulse">
+            <h3>Analyzing {args.location}...</h3>
+          </div>
+        );
+      }
+      if (status === "complete" && result) {
+        return (
+          <div className="p-4 border rounded bg-green-50">
+            <h3>Analysis Complete: {args.location}</h3>
+            {/* <pre className="mt-2 p-2 bg-gray-100 rounded">
+              {JSON.stringify(result, null, 2)}
+            </pre> */}
+            <WeatherCard location={args.location} themeColor={themeColor} result={result} />
+          </div>
+        );
+      }
+      return <></>;
+    },
+  });
 
   // 🪁 Human In the Loop: https://docs.copilotkit.ai/pydantic-ai/human-in-the-loop
   useHumanInTheLoop(
@@ -134,26 +153,6 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
     },
     [themeColor],
   );
-
-  //   useHumanInTheLoop(
-  //   {
-  //     name: "fill_form_to_alert",
-  //     description: "Fill out the alert form on request.",
-  //     render: ({ respond, status }) => {
-  //       return (
-  //         <DynamicForm
-  //         parameters = {fetchParametersToFillForm()}
-  //         onSubmit={(values) =>{
-  //           console.log(values);
-  //           alert(`${values.title}: ${values.message}`)
-  //         } 
-  //       }
-  //       />
-  //       );
-  //     },
-  //   },
-  //   [themeColor],
-  // );
 
   useHumanInTheLoop({
     name: "humanApprovedCommand",
@@ -182,9 +181,17 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
           description: "The name of the item to delete",
           required: true,
         },
+        {
+          name: "id",
+          type: "string",
+          description: "The ID of the item to delete",
+          required: true,
+        },
       ],
-      render: ({ args, respond }) => {
-        return <DeleteConfirmationCard args={args as any} respond={respond as any} />;
+      render: ({ args, status, respond, result }) => {
+        return (
+          <DeleteConfirmationCard args={args as any} respond={respond as any} />
+        );
       },
     },
     [themeColor],
