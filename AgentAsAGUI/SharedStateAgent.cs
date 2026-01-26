@@ -91,14 +91,68 @@ internal sealed class SharedStateAgent : DelegatingAIAgent
             yield break;
         }
 
-        var secondRunMessages = messages.Concat(response.Messages).Append(
-            new ChatMessage(
+        // ✅ NEW: detect whether the state actually changed
+        bool stateChanged = ProverbsChanged(state, stateSnapshot);
+
+        // ✅ Only narrate if something changed
+
+        var summaryMessage = new ChatMessage(
                 ChatRole.System,
-                [new TextContent("Please provide a concise summary of the state changes in at most two sentences.")]));
+                [new TextContent("Please provide a concise summary about the latest change in at most two sentences.")]);
+
+        var secondRunMessages = messages.Concat(response.Messages);
+
+        if (stateChanged)
+            secondRunMessages = secondRunMessages.Append(summaryMessage);
 
         await foreach (var update in InnerAgent.RunStreamingAsync(secondRunMessages, thread, options, cancellationToken).ConfigureAwait(false))
         {
             yield return update;
         }
     }
+
+    private static bool ProverbsChanged(JsonElement oldState, JsonElement newState)
+    {
+        if (!oldState.TryGetProperty("proverbs", out var oldProverbs) ||
+            !newState.TryGetProperty("proverbs", out var newProverbs))
+        {
+            // If property missing on either side, treat as changed
+            return true;
+        }
+
+        // Must both be arrays
+        if (oldProverbs.ValueKind != JsonValueKind.Array ||
+            newProverbs.ValueKind != JsonValueKind.Array)
+        {
+            return true;
+        }
+
+        // Compare array length
+        if (oldProverbs.GetArrayLength() != newProverbs.GetArrayLength())
+        {
+            return true;
+        }
+
+        // Compare elements one by one
+        var oldEnum = oldProverbs.EnumerateArray();
+        var newEnum = newProverbs.EnumerateArray();
+
+        using var oldIt = oldEnum.GetEnumerator();
+        using var newIt = newEnum.GetEnumerator();
+
+        while (oldIt.MoveNext() && newIt.MoveNext())
+        {
+            // Assuming proverbs are strings
+            if (!string.Equals(
+                    oldIt.Current.GetString(),
+                    newIt.Current.GetString(),
+                    StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false; // No change
+    }
+
 }

@@ -61,10 +61,6 @@ export default function CopilotKitPage() {
             title: "Human In the Loop",
             message: "Delete the user with id 001",
           },
-          // {
-          //   title: "Human In the Loop command",
-          //   message: "Run a command to print Hello World.",
-          // },
           {
             title: "Write Agent State",
             message: "Add a proverb about AI.",
@@ -159,48 +155,55 @@ function YourMainContent({ themeColor }: { themeColor: string }) {
   //   [themeColor],
   // );
 
-  // useHumanInTheLoop({
-  //   name: "humanApprovedCommand",
-  //   description: "Ask human for approval to run a command.",
-  //   parameters: [
-  //     {
-  //       name: "command",
-  //       type: "string",
-  //       description: "The command to run",
-  //       required: true,
-  //     },
-  //   ],
-  //   render: ({ args, respond }) => {
-  //     return <HumanApprovalCard args={args as any} respond={respond as any} />;
-  //   },
-  // });
-
-  useHumanInTheLoop(
+  useHumanInTheLoop({
+  name: "confirmDeletion",
+  description: "Ask the human to confirm deletion or removal of an item.",
+  parameters: [
     {
-      name: "confirmDelete",
-      description: "Ask the human to confirm deletion or removal of an item.",
-      parameters: [
-        {
-          name: "id",
-          type: "string",
-          description: "The ID of the item to delete",
-          required: true,
-        },
-        {
-          name: "entity",
-          type: "string",
-          description: "The name of the entity to delete",
-          required: true,
-        },
-      ],
-      render: ({ args, status, respond, result }) => {
-        return (
-          <DeleteConfirmationCard args={args as any} respond={respond as any} />
-        );
-      },
+      name: "id",
+      type: "string",
+      description: "The ID of the item to delete",
+      required: true,
     },
-    [themeColor],
-  );
+    {
+      name: "entity",
+      type: "string",
+      description: "The name of the entity to delete",
+      required: true,
+    },
+  ],
+  render: ({ args, status, respond, result }) => {
+    if (status === "executing" && respond) {
+      return (
+        <div className="p-4 border rounded">
+          <p>Are you sure you want to delete {args.entity} with ID {args.id}?</p>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => respond({ confirmed: true })}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => respond({ confirmed: false })}
+              className="bg-gray-300 px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      );
+    }
+    if (status === "complete" && result) {
+      return (
+        <div className="p-2 text-sm text-gray-600">
+          {result.confirmed ? "Items deleted" : "Deletion cancelled"}
+        </div>
+      );
+    }
+    return <></>;
+  },
+});
 
   return (
     <div
